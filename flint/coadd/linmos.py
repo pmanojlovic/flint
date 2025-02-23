@@ -188,7 +188,8 @@ def trim_fits_image(
     image_path: Path, bounding_box: BoundingBox | None = None
 ) -> TrimImageResult:
     """Trim the FITS image produces by linmos to remove as many empty pixels around
-    the border of the image as possible. This is an inplace operation.
+    the border of the image as possible. This is an inplace operation. Pixels
+    that have a value of 0.0 are first filled with nan values before trimming.
 
     Args:
         image_path (Path): The FITS image that will have its border trimmed
@@ -201,6 +202,11 @@ def trim_fits_image(
     with fits.open(image_path) as fits_image:
         data = fits_image[0].data  # type: ignore
         logger.info(f"Original data shape: {data.shape}")
+
+        # 0.0 is not a real number, blank them out so the border
+        # can be computed and trimmed correctly.
+        logger.info("Blanking pixels with values of 0.0.")
+        data[data == 0.0] = np.nan
 
         image_shape = data.shape[-2:]
         logger.info(f"The image dimensions are: {image_shape}")
