@@ -1,6 +1,7 @@
+(config)=
 # Configuration
 
-## Configuration based settings
+## Configuration based settings in Python API
 
 Most settings within `flint` are stored in immutable option classes, e.g.
 `WSCleanOptions`, `GainCalOptions`. Once they such an option class has been

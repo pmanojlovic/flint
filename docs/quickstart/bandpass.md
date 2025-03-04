@@ -1,3 +1,4 @@
+(bandpass)=
 # Bandpass calibration
 
 The ASKAP Observatory uses the source [PKS B1934-638](https://www.narrabri.atnf.csiro.au/calibrators/calibrator_database_viewcal?source=1934-638) as its primary flux reference and bandpass calibrator. A bandpass observation consists of pointing each formed beam on the reference sources for ~2min of integration. A single bandpass SBID contains the data for _all_ beams as each beam is pointed on-source. We note that it is ultimately up to the user to ensure that the bandpass obtained matches the science field in both time and beam-forming weights. We also note that raw bandpass and target data is not typically provided by the observatory to science users.
