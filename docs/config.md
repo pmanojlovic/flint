@@ -1,6 +1,66 @@
 (config)=
 # Configuration
 
+## CLI Configuration file
+
+To help manage (and avoid) long CLI calls to configure `flint`, most command
+line options may be dumped into a new-line delimited text file which can then be
+set as the `--cli-config` option of some workflows. See the `configargparse`
+python utility to read up on more on how options may be overridden if specified
+in both the text file and CLI call.
+
+## Strategy file
+
+To help wrangling the many options available in `flint` we use a 'strategy' file.
+
+This file is written in YAML has has the following rough layout:
+
+```yaml
+defaults:
+    mode:
+        option1: X
+        option2: Y
+
+operation1:
+    mode:
+        option1: Z
+
+operation2:
+    mode:
+        option2: A
+```
+
+The `defaults` section sets the 'global' default for a given option, which can be updated in given context e.g. a particular round of self-calibration.
+
+An 'operation' refers to flow context in which a particular tool is being usef. As of version 0.2, the following 'operations' are supported:
+
+- `selfcal`
+- `stokesv`
+- `subtractcube`
+- `polarisation`
+
+A 'mode' refers to a set of options for a given tool. As of version 0.2, the following 'modes' are supported:
+
+- `wsclean`
+- `gaincal`
+- `masking`
+- `archive`
+- `bane`
+- `aegean`
+
+To see all the available options you can run `flint_{mode} -h` on the command-line.
+
+As a general rule, the following hierarchy is used to set a value for a given option:
+
+- The value given in a CLI call
+- The specific context in a given 'mode' (e.g. round of self-cal)
+- The value in `defaults`
+- The default value in the `Options` class
+- The default value in a calling function
+- The default value in the external tool
+
+Note that not all options are available in all of the above locations.
+
 ## Configuration based settings in Python API
 
 Most settings within `flint` are stored in immutable option classes, e.g.
@@ -45,19 +105,3 @@ corresponding options defined in the `defaults` scope.
 tweaked. The template file uses YAML to define scope and settings. So, use the
 YAML standard when modifying this file. There are primitive verification
 functions to ensure the modified template file is correctly form.
-
-## CLI Configuration file
-
-To help manage (and avoid) long CLI calls to configure `flint`, most command
-line options may be dumped into a new-line delimited text file which can then be
-set as the `--cli-config` option of some workflows. See the `configargparse`
-python utility to read up on more on how options may be overridden if specified
-in both the text file and CLI call.
-
-## Configuration schema
-
-TODO: Document the config file schema
-
-## Configuration examples
-
-TODO: Add configuration examples
