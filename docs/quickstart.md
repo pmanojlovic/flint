@@ -1,7 +1,7 @@
 # Quickstart
 
 ```{toctree}
-:maxdepth: 2
+:maxdepth: 1
 quickstart/deployment.md
 quickstart/bandpass.md
 quickstart/sky_model.md
