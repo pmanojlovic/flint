@@ -2,6 +2,7 @@
 
 ```{toctree}
 :maxdepth: 2
+quickstart/deployment.md
 quickstart/bandpass.md
 quickstart/sky_model.md
 quickstart/selfcal.md

@@ -1,1 +1,1 @@
-# Spectral line cubes
+# Spectral line imaging
