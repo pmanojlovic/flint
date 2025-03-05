@@ -130,17 +130,17 @@ defaults:
     multiscale: true
     multiscale_scale_bias: 0.6
     multiscale_scales: !!python/tuple
-    - 0
-    - 4
-    - 8
-    - 16
-    - 24
-    - 32
-    - 48
-    - 64
-    - 92
-    - 128
-    - 196
+      - 0
+      - 4
+      - 8
+      - 16
+      - 24
+      - 32
+      - 48
+      - 64
+      - 92
+      - 128
+      - 196
     fit_spectral_pol: 5
     weight: briggs 0.5
     data_column: CORRECTED_DATA
@@ -181,27 +181,27 @@ defaults:
     grow_low_snr_island_size: 12046
   archive:
     tar_file_re_patterns: !!python/tuple
-    - .*round4.*MFS.*(image|residual|model,cube)\.fits
-    - .*linmos.*
-    - .*weight\.fits
-    - .*yaml
-    - .*\.txt
-    - .*png
-    - .*beam[0-9]+\.ms\.(zip|tar)
-    - .*beam[0-9]+\.ms
-    - .*\.caltable
-    - .*\.tar
-    - .*\.csv
-    - .*comp\.fits
+      - .*round4.*MFS.*(image|residual|model,cube)\.fits
+      - .*linmos.*
+      - .*weight\.fits
+      - .*yaml
+      - .*\.txt
+      - .*png
+      - .*beam[0-9]+\.ms\.(zip|tar)
+      - .*beam[0-9]+\.ms
+      - .*\.caltable
+      - .*\.tar
+      - .*\.csv
+      - .*comp\.fits
     copy_file_re_patterns: !!python/tuple
-    - .*linmos.*fits
-    - .*weight\.fits
-    - .*png
-    - .*csv
-    - .*caltable\.tar
-    - .*txt
-    - .*comp\.fits
-    - .*yaml
+      - .*linmos.*fits
+      - .*weight\.fits
+      - .*png
+      - .*csv
+      - .*caltable\.tar
+      - .*txt
+      - .*comp\.fits
+      - .*yaml
 
 selfcal:
     0:
@@ -276,9 +276,4 @@ selfcal:
         flood_fill_positive_seed_clip: 1.2
         flood_fill_positive_flood_clip: 0.7
         flood_fill_use_mbc_box_size: 60
-stokesv:
-  wsclean:
-    pol: v
-    no_update_model_required: true
-    nmiter: 6
 ```
