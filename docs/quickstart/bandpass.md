@@ -5,7 +5,7 @@ The ASKAP Observatory uses the source [PKS B1934-638](https://www.narrabri.atnf.
 
 ## Using Flint for calibration
 
-The primary entry point for bandpass calibration in `flint` is `flint_flow_bandpass_calibrate`:
+The primary entry point for bandpass calibration in `flint` is the `flint_flow_bandpass_calibrate`:
 
 ```bash
 flint_flow_bandpass_calibrate -h
@@ -49,7 +49,7 @@ flint_flow_bandpass_calibrate -h
 #                         Flag Jones matrix if any amplitudes with a Jones are above this value
 ```
 
-This flow will run the following stages:
+This is a prefect flow that will run the following stages:
 
 - Split the on-source portions of the bandpass data
 - Apply appropriate corrections to visibilities to for use with `flint` tooling
@@ -58,4 +58,21 @@ This flow will run the following stages:
 - Apply the solutions to the bandpass data, flag RFI, and rederive solutions (repeated `FLAG_CALIBRATE_ROUNDS` times)
 - Apply a final set of flagging and smoothing the the bandpass solutions themselves
 
-The solutions will be saved in a binary formart to the specified output directory along with basic validation plots.
+
+ ## Outputs
+
+ The prefect workflow described above will output:
+
+ - A measurement set for each beam centered on PKS B19340638
+ - The set of bandpass solutions appropriately named
+ - Validation plots of the derived solutions.
+
+At present the bandpass solver principally relied upon in `flint` is (`calibrate`)[https://ui.adsabs.harvard.edu/abs/2016MNRAS.458.1057O/abstract], which implements the
+[`MitchCal` algorithm](https://ui.adsabs.harvard.edu/abs/2008ISTSP...2..707M/abstract). The output set of solutions are a series of Jones matrices packed into a binary
+solutions file. When selecting a set of bandpass solutions to apply `flint` will examine the meta-data encoded in each of the PKS B1934-638 per beam measurement sets
+in order to ensure consistent frequency coverage, channelisation and beam. This information is not encoded in the output binary solutions file, so the measurement sets
+are necessary and should be preserved. In principal, appropriate solutions could be selected on name alone (since `flint` controls the output naiming scheme), but
+as a general principal it is believed that important meta-data should not be stored principally in a file path name.
+
+In subsequent workflows that operate against a field and a bandpass is required, the path the folder that contains the
+collection of per-beam observations of PKS B1934-638 and the corresponding set of solutions should be supplied.

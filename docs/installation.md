@@ -37,27 +37,30 @@ flint_containers download -h
 #   -h, --help           show this help message and exit
 ```
 
-In a future release it is planned that tasks or processes that require a container will internally resolve them automatically. For the moment though it is expected that the user provides the appropriate set of paths through CLI keyword arguments.
+In a future release it is planned that tasks or processes that require a container
+will internally resolve them automatically. For the moment though it is expected
+that the user provides the appropriate set of paths through CLI keyword arguments.
 
 ## Installing casacore
 
-Provided an appropriate environment, installation of `flint` should be as simple as a
+Provided an appropriate environment, installinf `flint` should be as simple as a
 `pip install`. However, on some systems there are interactions with `casacore` and building
 `python-casacore` appropriately. Issues have been noted when interacting with
 large measurement sets across components with different `casacore` versions.
 This seems to happen even across container boundaries (i.e. different versions
 in containers might play a role). The exact cause is not at all understood, but
 it appears to be related to the version of `python-casacore`, `numpy` and
-whether pre-built wheels are used. In recent releases this problem does appear to have been eliminated, almost certainly in upstream dependencies.
+whether pre-built wheels are used. In recent releases this problem does appear
+to have been eliminated, almost certainly in upstream dependencies.
 
 In practise it might be easier to leverage `conda` to install the appropriate
 `boost` and `casacore` libraries.
 
 We have split out the `pip` dependencies that rely on `python-casacore`. These
-can be installed by running:
+can be installed by running from within thg `git clone` `flint` repository folder:
 
 ```bash
-pip install .[casa]
+pip install '.[casa]'
 ```
 
 A helpful script below may be of use.
@@ -79,8 +82,9 @@ conda create -y  -n "${DIR}" python="${PYVERSION}" &&  \
         source /home/$(whoami)/.bashrc && \
         conda activate "${DIR}" && \
         conda install -y -c conda-forge boost casacore && \
-        PIP_NO_BINARY="python-casacore" pip install -e .[casa]
+        PIP_NO_BINARY="python-casacore" pip install -e '.[casa]'
 ```
 
-This may set up an appropriate environment that is compatible with the
-containers currently being used.
+This should set up an appropriate environment that is compatible with the
+containers currently being used. Do note though that we are not attempting
+to install or configure `apptainer`.
