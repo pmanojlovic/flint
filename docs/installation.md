@@ -37,16 +37,18 @@ flint_containers download -h
 #   -h, --help           show this help message and exit
 ```
 
+In a future release it is planned that tasks or processes that require a container will internally resolve them automatically. For the moment though it is expected that the user provides the appropriate set of paths through CLI keyword arguments.
+
 ## Installing casacore
 
-Provided an appropriate environment installation should be as simple as a
+Provided an appropriate environment, installation of `flint` should be as simple as a
 `pip install`. However, on some systems there are interactions with `casacore` and building
 `python-casacore` appropriately. Issues have been noted when interacting with
 large measurement sets across components with different `casacore` versions.
 This seems to happen even across container boundaries (i.e. different versions
 in containers might play a role). The exact cause is not at all understood, but
 it appears to be related to the version of `python-casacore`, `numpy` and
-whether pre-built wheels are used.
+whether pre-built wheels are used. In recent releases this problem does appear to have been eliminated, almost certainly in upstream dependencies.
 
 In practise it might be easier to leverage `conda` to install the appropriate
 `boost` and `casacore` libraries.
