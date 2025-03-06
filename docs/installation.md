@@ -2,7 +2,7 @@
 
 The `flint` module itself is built in pure Python and can be installed using `pip`. We highly recommend using [uv](https://docs.astral.sh/uv/) for speedy installation.
 
-For compiled tools, `flint` uses `singularity` containers. Users must install `singularity` or `apptainer` on their system for these to work.
+For compiled tools, `flint` uses `singularity` containers. Users must install `singularity` or `apptainer` on their system for these to work. If given the choice, install `apptainer`, which is the community developed and maintained fork of `singularity`.
 
 ## Containers
 

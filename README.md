@@ -26,5 +26,5 @@ something you would like to address.
 The full set of dev tooling can be installed via:
 
 ```bash
-pip install .[dev]
+pip install '.[dev]'
 ```
