@@ -6,7 +6,7 @@ The `flint` python package is logically divided into two parts:
 - A set of pure python functions and classes to do isolated units of work
 - A specialised `flint.prefect` sub-module to coordinate tasks and workflows
 
-The distinction is important as it would allow the transition to a different workflow orchastration tool should our requirements change.
+The distinction is important as it would allow the transition to a different workflow orchestration tool should our requirements change.
 Presently we are using a `python` module named `prefect` to designed and implement workflows within `flint`, but effort has been made
 towards keeping these two components separated should a new workflow manager been needed.
 
@@ -16,7 +16,7 @@ should therefore be straight forward and as simple as a `pip` command.
 (prefect)=
 ## Prefect orchestration
 
-(`Prefect` workflow orchestration framework for building data pipelines in python.)[https://github.com/PrefectHQ/prefect].
+[`Prefect` workflow orchestration framework for building data pipelines in python.](https://github.com/PrefectHQ/prefect).
 A pipeline attempts to control the flow of data between tasks, and manage the potentially complex set of dependencies that exist
 between different stages. The goal of `prefect` is to facilitate this with as little code as possible while representing the work
 in a form that is distinct from the compute environment and the `python` functions themselves. By appropriately managing this
@@ -24,7 +24,7 @@ the workflow in of itself is remarkably scalble with little dependence on comput
 
 ### The strategy from Prefect
 
-(Prefect provides an installation and quickstart guide on their official website.)[https://docs.prefect.io/v3/get-started/install]
+[Prefect provides an installation and quickstart guide on their official website.](https://docs.prefect.io/v3/get-started/install)
 There information is provided that not only more thoroughly explains their framework, but also gives sets on how to tap into their
 cloud platform (more below) or how to set up a self-hosted `prefect.server` instance. This information will be more complete (and
 correct) than the brief notes here.
@@ -41,7 +41,7 @@ The `prefect` cloud platform offers a managed solution of such a `prefect` serve
 As a user do you need to also setup a relational database server and `prefect` server instance? No. Should
 you run a `prefect` enabled workflow without these, `prefect` will automatically use a short lived set of
 database and server processes to manage the workflow. This comes at a scalability cost though. Large workflows
-with many concurrent sets of independent workers may overwhele the default shortlived set of services.
+with many concurrent sets of independent workers may overwhelm the default shortlived set of services.
 
 ### Deploying your own prefect server
 
