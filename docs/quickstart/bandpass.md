@@ -58,6 +58,7 @@ This is a prefect flow that will run the following stages:
 - Apply the solutions to the bandpass data, flag RFI, and rederive solutions (repeated `FLAG_CALIBRATE_ROUNDS` times)
 - Apply a final set of flagging and smoothing the the bandpass solutions themselves
 
+The above procedure attempts to identify faint sources of RFI that only become apparent after an initial calibration has been applied. When recalibrating with updatede flags the raw data are used, i.e. we are not calibrating off already calibratede data.
 
  ## Outputs
 

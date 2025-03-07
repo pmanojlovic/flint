@@ -7,10 +7,14 @@ As a user, you will need to set and consider some of the following options:
 
 - `science_path`: Directory containing your input science visibilities
 - `split-path`: Where your output calibrated visibiltiies will be placed
-- `calibrated-bandpass-path` or `skip-bandpass-check`: Set either where your bandpass solutions are (see {ref}`bandpass calibration <bandpass>`), or state that your science data is already bandpass-calibrated (e.g. from CASDA).
+- `calibrated-bandpass-path`: Set either where your bandpass solutions are (see {ref}`bandpass calibration <bandpass>`).
 - `imaging-strategy`: Path to your 'strategy' YAML file (see {ref}`below <strategy>`).
 
 Note that `flint` supports passing in a config file to specify CLI options via `--cli-config` (see {ref}`config`). This is particularly useful for sharing a common set of options between multiple runs of the pipeline.
+
+## Skipping bandpass calibration
+
+`flint` supports the imaging of CASDA deposited measurement sets whose visibilities produced by the operational ASKAP pipeline. These measurement sets are already bandpass calibrated, and often have gone through multiple rounds of self-calibration. In such a situation bandpass solutions are not needed. Should `flint` detect that the measurement sets specified by `science_path` be appear to be from CASDA, the `flint_flow_continuum_pipeline` will not attempt to apply any bandpass set of solutions, and will appropriately pre-process the visibilities accordingly.
 
 ## Command-line options
 
@@ -108,7 +112,7 @@ flint_flow_continuum_pipeline -h
 
 To keep track of options across rounds of self-calibration we use a 'strategy' file in a YAML format. We give details of this in {ref}`config`. You can generate a minimal strategy file using `flint_config create`. You can specify a 'global' set of options under `defaults`, which will be overwritten by any options set in rounds of `selfcal`.
 
-By way of example, the following strategy file appears to work well for RACS-style data. We do not recommend using this verbatim for any/all sets of data.
+By way of example, the following strategy file appears to work well for RACS-style data. We do not recommend using this verbatim for any/all sets of data. The `flint_flow_selfcal_pipeline` workflow if referenced by the `selfcal` operation.
 
 ```yaml
 version: 0.2
@@ -281,3 +285,9 @@ stokesv:
     no_update_model_required: true
     nmiter: 6
 ```
+
+## Other notes
+
+Should `--stokes-v-imaging` be invoked than after the last round of self-calibration each measurement set will be images in Stokes-V. Settings around the imaging parameters for these Stokes-V imaging are specified by the `stokesv` operation.
+
+Should `--coadd-cubes` be invoked than the spectral Stokes-I cubes produced by `wsclean` after the final imaging round are co-addede together to form a field image at different channel ranges. This can be used to investigate the spectral variation of sources. Each channel will be convolved to a common resolution for that channel. In this mode a single `linmos` task is invoked to do the co-adding, which may mean a single long running task should `wsclean` produce many output channels. Be mindful of memory requirements here, as this modde of operation will attempt to load the entirety of all cubes and weights into memory.

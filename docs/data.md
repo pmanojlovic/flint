@@ -19,7 +19,7 @@ flint_catalogues download -h
 
 This will download a set of reference catalogues from (ViZieR)[https://vizier.cds.unistra.fr/]. The complete list of catalogues may be listed with `flint_catalogues list`. At present there is no mechanism to introduce additional reference catalogues in configuration file based way - they have to be described in source code with an additional `flint.catalgue.Catalogue` class definition.
 
-See `flint.catalogue.KNOWN_REFERENCE_CATALOGUES`.
+See `flint.catalogue.KNOWN_REFERENCE_CATALOGUES` (in the source or through programmatically) should a new `ViZieR` catalogue need to be added.
 
 ## Sky-model catalogues
 

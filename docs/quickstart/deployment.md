@@ -22,7 +22,7 @@ between different stages. The goal of `prefect` is to facilitate this with as li
 in a form that is distinct from the compute environment and the `python` functions themselves. By appropriately managing this
 the workflow in of itself is remarkably scalble with little dependence on compute platforms.
 
-### The strategy from Prefect
+### The strategy of using Prefect
 
 (Prefect provides an installation and quickstart guide on their official website.)[https://docs.prefect.io/v3/get-started/install]
 There information is provided that not only more thoroughly explains their framework, but also gives sets on how to tap into their
@@ -150,12 +150,52 @@ the location of the site-packages of the appropriate python environment. The cur
 out in place. For proper robustness this should be changed.
 
 Provided these two services start without throwing an error you should not be able to visit port 4200 of your
-server in a web browser to access the `prefect` web page. Similarly, should you want to run a flow that is registered
-against this `prefect` instance you will need to set the following environment variable in your workflow scripts:
+server in a web browser to access the `prefect` web page.
+
+## Running a `prefect` flow
+
+Should you want to run a flow that is registered against this `prefect` instance you will need to set the following environment variable in your workflow scripts:
 
 ```bash
 export APIURL=http://${YOUR_MACHINE_ADDRESS}:4200/api
 ```
 
 where you put an appropriate IP address or fully qualified hostname of the server running the `prefect` service
-as outline above.
+as outline above. The `prefect` client that will be running the workflow (e.g. the main `python` process) will communicate with the RESTful API endpoint established above. Should you be using the `prefect` cloud there will be an `API` token that should be set instead. Refer to the official set of `prefect` docs for further information.
+
+Throughout `flint` we have configured `prefect` to use `dask` as its compute backend. `prefect` sits on top of `dask` to provide an additional set of event based triggers, but under the hood distributed task execution relies on `dask` infrastructure. The `dask.distributed` schedular is responsible for coordinating the execution of tasks among a workflow, and it may be configured to run on many different platforms. Typically, most `flint` workflows to-date have been run on HPC systems controlled by `SLURM`. Through the `dask_jobqueue` package `flint` can be configured to execute its workflows seamlessly on such a platform strictly through a single configuration file.  Below is an example of a YAML file that could be provided to `flint` to establish a set of workers using a `SLURMCluster` object.
+
+```yaml
+cluster_class: "dask_jobqueue.SLURMCluster"
+cluster_kwargs:
+    cores: 1
+    processes: 1
+    job_cpu: 8
+    name: 'flint-worker'
+    memory: "128GB"
+    walltime: '0-24:00:00'
+    job_extra_directives:
+      - '--qos express'
+      - '--no-requeue'
+    # interface for the workers
+    interface: "ib0"
+    log_directory: 'flint_logs'
+    job_script_prologue:
+        - 'module load singularity'
+        - 'unset SINGULARITY_BINDPATH'
+        - "export OMP_NUM_THREADS=${SLURM_CPUS_ON_NODE}"
+    local_directory: $LOCALDIR
+    silence_logs: 'info'
+adapt_kwargs:
+    minimum: 1
+    maximum: 38
+```
+
+Providing a path to a YAML file will configure `flint` to:
+
+- use `SLURM` to acquire compute resources for each dask work
+- each dask worker will be allocated 8 CPU cores and 128GB memory
+- set a wall time of 24 hours
+- adaptively scale the number of concurrent dask workers from 1 worker up to 38 workers (done so as demanded by the number of available tasks to run)
+
+See `dask_jobqueue.SLURMCluster` for a complete list of available keyword arguments.
