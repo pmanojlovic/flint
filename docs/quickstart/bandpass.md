@@ -60,15 +60,15 @@ This is a prefect flow that will run the following stages:
 
 The above procedure attempts to identify faint sources of RFI that only become apparent after an initial calibration has been applied. When recalibrating with updatede flags the raw data are used, i.e. we are not calibrating off already calibratede data.
 
- ## Outputs
+## Outputs
 
- The prefect workflow described above will output:
+The prefect workflow described above will output:
 
- - A measurement set for each beam centered on PKS B19340638
- - The set of bandpass solutions appropriately named
- - Validation plots of the derived solutions.
+- A measurement set for each beam centered on PKS B19340638
+- The set of bandpass solutions appropriately named
+- Validation plots of the derived solutions.
 
-At present the bandpass solver principally relied upon in `flint` is (`calibrate`)[https://ui.adsabs.harvard.edu/abs/2016MNRAS.458.1057O/abstract], which implements the
+At present the bandpass solver principally relied upon in `flint` is [`calibrate`](https://ui.adsabs.harvard.edu/abs/2016MNRAS.458.1057O/abstract), which implements the
 [`MitchCal` algorithm](https://ui.adsabs.harvard.edu/abs/2008ISTSP...2..707M/abstract). The output set of solutions are a series of Jones matrices packed into a binary
 solutions file. When selecting a set of bandpass solutions to apply `flint` will examine the meta-data encoded in each of the PKS B1934-638 per beam measurement sets
 in order to ensure consistent frequency coverage, channelisation and beam. This information is not encoded in the output binary solutions file, so the measurement sets

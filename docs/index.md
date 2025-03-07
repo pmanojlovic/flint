@@ -13,8 +13,6 @@ quickstart.md
 about.md
 data.md
 config.md
-validation.md
-examples.md
 ```
 
 ## Indices and tables
