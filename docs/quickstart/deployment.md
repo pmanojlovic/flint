@@ -163,7 +163,7 @@ export APIURL=http://${YOUR_MACHINE_ADDRESS}:4200/api
 where you put an appropriate IP address or fully qualified hostname of the server running the `prefect` service
 as outline above. The `prefect` client that will be running the workflow (e.g. the main `python` process) will communicate with the RESTful API endpoint established above. Should you be using the `prefect` cloud there will be an `API` token that should be set instead. Refer to the official set of `prefect` docs for further information.
 
-Throughout `flint` we have configured `prefect` to use `dask` as its compute backend. `prefect` sits on top of `dask` to provide an additional set of event based triggers, but under the hood distributed task execution relies on `dask` infrastructure. The `dask.distributed` schedular is responsible for coordinating the execution of tasks among a workflow, and it may be configured to run on many different platforms. Typically, most `flint` workflows to-date have been run on HPC systems controlled by `SLURM`. Through the `dask_jobqueue` package `flint` can be configured to execute its workflows seamlessly on such a platform strictly through a single configuration file.  Below is an example of a YAML file that could be provided to `flint` to establish a set of workers using a `SLURMCluster` object.
+Throughout `flint` we have configured `prefect` to use `dask` as its compute backend. `prefect` sits on top of `dask` to provide an additional set of event based triggers and workflow observatibility, but under the hood distributed task execution relies on `dask` infrastructure. The `dask.distributed` schedular is responsible for coordinating the execution of tasks among a workflow, and it may be configured to run on many different platforms. Typically, most `flint` workflows to-date have been run on HPC systems controlled by `SLURM`. Through the `dask_jobqueue` package `flint` can be configured to execute its workflows seamlessly on such a platform strictly through a single configuration file.  Below is an example of a YAML file that could be provided to `flint` to establish a set of workers using a `SLURMCluster` object.
 
 ```yaml
 cluster_class: "dask_jobqueue.SLURMCluster"
@@ -198,4 +198,8 @@ Providing a path to a YAML file will configure `flint` to:
 - set a wall time of 24 hours
 - adaptively scale the number of concurrent dask workers from 1 worker up to 38 workers (done so as demanded by the number of available tasks to run)
 
+Here a `dask-worker` refers to an agent established by `dask` that carries out work. Here work refers to some task that has been been created and registered by `prefect` onto the `dask` work graph. Each `dask-worker` that is created is persistent so long as there is work. They each can carry out many distinct and isolated tasks. The distributed `dask` cluster is responsible for this coordination, and is capable to anticipanting issues around data locaclity (e.g. in memory data structures/results that would need to bne transferred) when allocating work.
+
 See `dask_jobqueue.SLURMCluster` for a complete list of available keyword arguments.
+
+Note that there there are many other `dask` cluster types for a variety of platforms. Redeploying to a new platform should be straightforward if there exists a `dask` cluster interface for it.
