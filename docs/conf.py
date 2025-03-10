@@ -35,6 +35,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_copybutton",
     "autoapi.extension",
+    "sphinxarg.ext",
 ]
 
 myst_enable_extensions = [

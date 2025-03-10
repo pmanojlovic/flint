@@ -2,22 +2,8 @@
 
 One approach towards improving the performance of CLEAN and its derivatives is to provide a _clean mask_ where is a set of pixels are defined that restrict the peak finding process. Here the aim of the game is to optimally select pixels that contain genuine emission. Issues such as clean bias. sub-optimal self-calibration and clean divergence can be minimised or outright avoided provide a clean mask has been reliable constructed.
 
-`Flint` provide functionality to describe a pixel-wise masks or arbitrary shapes that can be used to restrict region where cleaning is allowed to be performed. These are intended to be evaluated against a restored FITS image. The masking utility may be accessed via a CLI entrypoint:
+`Flint` provide functionality to describe a pixel-wise masks or arbitrary shapes that can be used to restrict region where cleaning is allowed to be performed. These are intended to be evaluated against a restored FITS image, and the outputs is a FITS image of equal shape where pixels with a value of `1` indicate cleaning is allowed, `0` otherwise.
 
-```bash
-flint_masking -h
-# usage: flint_masking [-h] {mask,extractmask} ...
-#
-# Simple utility functions to create masks from FITS images.
-#
-# positional arguments:
-#   {mask,extractmask}  Operation mode of flint_bandpass
-#     mask              Create a mask for an image, potentially using its RMS and BKG images (e.g. outputs from BANE). Output FITS image will default to the image with a mask suffix.
-#     extractmask       Extract a beam FITS masked region from a larger FITS mask mosaic image.
-#
-# options:
-#   -h, --help          show this help message and exit
-```
 
 ## Available statistics
 
@@ -81,3 +67,12 @@ The output binary clean masks are naturally at the resolution of the input image
 A binary erosion process where the structure is the shape of the restoring beam at a particular power level can suppress this effect. See the `MaskingOptions.beam_shape_erode` and `MaskingOptions.beam_shape_erode_minimum_response` options to activate and control this process. The minimum response should be set between 0 to 1, where numbers closer to 0 represent a larger structure function. That is to say for the islands need to be *larger* for pixels to remain after the erosion for as the minimum response approaches 0. As the minimum response approaches 1 smaller islands will survive the erosion process.
 
 The output eroded mask aims to better capture where the clean components are likely to be placed during deconvolution, restricting where cleaning is allow to occur.
+
+# Accessing via the CLI
+
+The masking utility may be accessed via a CLI entrypoint:
+
+```{argparse}
+:ref: flint.masking.get_parser
+:prog: flint_masking
+```

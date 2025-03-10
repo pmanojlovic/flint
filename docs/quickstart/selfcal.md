@@ -16,97 +16,6 @@ Note that `flint` supports passing in a config file to specify CLI options via `
 
 `flint` supports the imaging of CASDA deposited measurement sets whose visibilities produced by the operational ASKAP pipeline. These measurement sets are already bandpass calibrated, and often have gone through multiple rounds of self-calibration. In such a situation bandpass solutions are not needed. Should `flint` detect that the measurement sets specified by `science_path` be appear to be from CASDA, the `flint_flow_continuum_pipeline` will not attempt to apply any bandpass set of solutions, and will appropriately pre-process the visibilities accordingly.
 
-## Command-line options
-
-```bash
-flint_flow_continuum_pipeline -h
-# usage: flint_flow_continuum_pipeline [-h] [--cli-config CLI_CONFIG] [--split-path SPLIT_PATH] [--calibrated-bandpass-path CALIBRATED_BANDPASS_PATH] [--cluster-config CLUSTER_CONFIG]
-#                                      [--skip-bandpass-check] [--flagger-container FLAGGER_CONTAINER] [--calibrate-container CALIBRATE_CONTAINER] [--casa-container CASA_CONTAINER]
-#                                      [--expected-ms EXPECTED_MS] [--wsclean-container WSCLEAN_CONTAINER] [--yandasoft-container YANDASOFT_CONTAINER] [--potato-container POTATO_CONTAINER]
-#                                      [--holofile HOLOFILE] [--rounds ROUNDS] [--skip-selfcal-on-rounds SKIP_SELFCAL_ON_ROUNDS] [--zip-ms] [--run-aegean]
-#                                      [--aegean-container AEGEAN_CONTAINER] [--no-imaging] [--reference-catalogue-directory REFERENCE_CATALOGUE_DIRECTORY] [--linmos-residuals]
-#                                      [--beam-cutoff BEAM_CUTOFF] [--fixed-beam-shape FIXED_BEAM_SHAPE] [--pb-cutoff PB_CUTOFF] [--use-preflagger] [--use-smoothed] [--use-beam-masks]
-#                                      [--use-beam-masks-from USE_BEAM_MASKS_FROM] [--use-beam-masks-rounds USE_BEAM_MASKS_ROUNDS] [--imaging-strategy IMAGING_STRATEGY]
-#                                      [--sbid-archive-path SBID_ARCHIVE_PATH] [--sbid-copy-path SBID_COPY_PATH] [--rename-ms] [--stokes-v-imaging] [--coadd-cubes]
-#                                      [--update-model-data-with-source-list]
-#                                      science_path
-
-# A prefect based pipeline that: - will perform bandpass calibration with PKS B1934-638 data, or from a derived sky-model - copy and apply to science field - image and self-calibration the
-# science fields - run aegean source finding
-
-# positional arguments:
-#   science_path          Path to directories containing the beam-wise science measurementsets that will have solutions copied over and applied.
-
-# options:
-#   -h, --help            show this help message and exit
-#   --cli-config CLI_CONFIG
-#                         Path to configuration file
-#   --split-path SPLIT_PATH
-#                         Location to write field-split MSs to. Will attempt to use the parent name of a directory when writing out a new MS.
-#   --calibrated-bandpass-path CALIBRATED_BANDPASS_PATH
-#                         Path to directory containing the uncalibrated beam-wise measurement sets that contain the bandpass calibration source. If None then the '--sky-model-directory'
-#                         should be provided.
-#   --cluster-config CLUSTER_CONFIG
-#                         Path to a cluster configuration file, or a known cluster name.
-#   --skip-bandpass-check
-#                         Skip checking whether the path containing bandpass solutions exists (e.g. if solutions have already been applied)
-
-# Inputs for FieldOptions:
-#   --flagger-container FLAGGER_CONTAINER
-#                         Path to the singularity aoflagger container
-#   --calibrate-container CALIBRATE_CONTAINER
-#                         Path to the singularity calibrate container
-#   --casa-container CASA_CONTAINER
-#                         Path to the singularity CASA container
-#   --expected-ms EXPECTED_MS
-#                         The expected number of measurement set files to find
-#   --wsclean-container WSCLEAN_CONTAINER
-#                         Path to the singularity wsclean container
-#   --yandasoft-container YANDASOFT_CONTAINER
-#                         Path to the singularity yandasoft container
-#   --potato-container POTATO_CONTAINER
-#                         Path to the singularity potato peel container
-#   --holofile HOLOFILE   Path to the holography FITS cube that will be used when co-adding beams
-#   --rounds ROUNDS       Number of required rouds of self-calibration and imaging to perform
-#   --skip-selfcal-on-rounds SKIP_SELFCAL_ON_ROUNDS
-#                         Do not perform the derive and apply self-calibration solutions on these rounds
-#   --zip-ms              Whether to zip measurement sets once they are no longer required
-#   --run-aegean          Whether to run the aegean source finding tool
-#   --aegean-container AEGEAN_CONTAINER
-#                         Path to the singularity aegean container
-#   --no-imaging          Whether to skip the imaging process (including self-calibration)
-#   --reference-catalogue-directory REFERENCE_CATALOGUE_DIRECTORY
-#                         Path to the directory container the reference catalogues, used to generate validation plots
-#   --linmos-residuals    Linmos the cleaning residuals together into a field image
-#   --beam-cutoff BEAM_CUTOFF
-#                         Cutoff in arcseconds to use when calculating the common beam to convol to
-#   --fixed-beam-shape FIXED_BEAM_SHAPE
-#                         Specify the final beamsize of linmos field images in (arcsec, arcsec, deg)
-#   --pb-cutoff PB_CUTOFF
-#                         Primary beam attenuation cutoff to use during linmos
-#   --use-preflagger      Whether to apply (or search for solutions with) bandpass solutions that have gone through the preflagging operations
-#   --use-smoothed        Whether to apply (or search for solutions with) a bandpass smoothing operation applied
-#   --use-beam-masks      Construct beam masks from MFS images to use for the next round of imaging.
-#   --use-beam-masks-from USE_BEAM_MASKS_FROM
-#                         If `use_beam_masks` is True, this sets the round where beam masks will be generated from
-#   --use-beam-masks-rounds USE_BEAM_MASKS_ROUNDS
-#                         If `use_beam_masks` is True, this sets which rounds should have a mask applied
-#   --imaging-strategy IMAGING_STRATEGY
-#                         Path to a FLINT imaging yaml file that contains settings to use throughout imaging
-#   --sbid-archive-path SBID_ARCHIVE_PATH
-#                         Path that SBID archive tarballs will be created under. If None no archive tarballs are created. See ArchiveOptions.
-#   --sbid-copy-path SBID_COPY_PATH
-#                         Path that final processed products will be copied into. If None no copying of file products is performed. See ArchiveOptions.
-#   --rename-ms           Rename MSs throughout rounds of imaging and self-cal instead of creating copies. This will delete data-columns throughout.
-#   --stokes-v-imaging    Specifies whether Stokes-V imaging will be carried out after the final round of imagine (whether or not self-calibration is enabled).
-#   --coadd-cubes         Co-add cubes formed throughout imaging together. Cubes will be smoothed channel-wise to a common resolution. Only performed on final set of images
-#   --update-model-data-with-source-list
-#                         Attempt to update a MSs MODEL_DATA column with a source list (e.g. source list output from wsclean)
-
-# Args that start with '--' can also be set in a config file (specified via --cli-config). Config file syntax allows: key=value, flag=true, stuff=[a,b,c] (for details, see syntax at
-# https://goo.gl/R74nmi). In general, command-line values override config file values which override defaults.
-```
-
 (strategy)=
 ## Imaging strategy
 
@@ -291,3 +200,12 @@ stokesv:
 Should `--stokes-v-imaging` be invoked than after the last round of self-calibration each measurement set will be images in Stokes-V. Settings around the imaging parameters for these Stokes-V imaging are specified by the `stokesv` operation.
 
 Should `--coadd-cubes` be invoked than the spectral Stokes-I cubes produced by `wsclean` after the final imaging round are co-addede together to form a field image at different channel ranges. This can be used to investigate the spectral variation of sources. Each channel will be convolved to a common resolution for that channel. In this mode a single `linmos` task is invoked to do the co-adding, which may mean a single long running task should `wsclean` produce many output channels. Be mindful of memory requirements here, as this modde of operation will attempt to load the entirety of all cubes and weights into memory.
+
+## Accessing via the CLI
+
+The primary entry point for the continuum and self-calibration and imaging pipeline in `flint` is the `flint_flow_continuum_pipeline`:
+
+```{argparse}
+:ref: flint.prefect.flows.continuum_pipeline.get_parser
+:prog: flint_flow_continuum_pipeline
+```

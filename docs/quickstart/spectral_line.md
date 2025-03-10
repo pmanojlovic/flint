@@ -90,3 +90,13 @@ flint_flow_subtract_cube_pipeline -h
 # Output data
 
 The principle result of this workshow is a spectral cube of the observed field at the native spectral resolution of the input collection of measurement sets (including the corresponding weight map produced by `linmos`). Intermediary files created throughout the workflow are deleted once they are no longer needede in order to preserve disk space.
+
+
+## Accessing via the CLI
+
+The primary entry point for the continuum subtraction and spectral imaging pipeline in `flint` is the `flint_flow_subtract_cube_pipeline`:
+
+```{argparse}
+:ref: flint.prefect.flows.subtract_cube_pipeline.get_parser
+:prog: flint_flow_subtract_cube_pipeline
+```
