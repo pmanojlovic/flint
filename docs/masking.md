@@ -2,7 +2,22 @@
 
 One approach towards improving the performance of CLEAN and its derivatives is to provide a _clean mask_ where is a set of pixels are defined that restrict the peak finding process. Here the aim of the game is to optimally select pixels that contain genuine emission. Issues such as clean bias. sub-optimal self-calibration and clean divergence can be minimised or outright avoided provide a clean mask has been reliable constructed.
 
-`Flint` provide functionality to describe a pixel-wise masks or arbitrary shapes that can be used to restrict region where cleaning is allowed to be performed. These are intended to be evaluated against a restored FITS image.
+`Flint` provide functionality to describe a pixel-wise masks or arbitrary shapes that can be used to restrict region where cleaning is allowed to be performed. These are intended to be evaluated against a restored FITS image. The masking utility may be accessed via a CLI entrypoint:
+
+```bash
+flint_masking -h
+# usage: flint_masking [-h] {mask,extractmask} ...
+#
+# Simple utility functions to create masks from FITS images.
+#
+# positional arguments:
+#   {mask,extractmask}  Operation mode of flint_bandpass
+#     mask              Create a mask for an image, potentially using its RMS and BKG images (e.g. outputs from BANE). Output FITS image will default to the image with a mask suffix.
+#     extractmask       Extract a beam FITS masked region from a larger FITS mask mosaic image.
+#
+# options:
+#   -h, --help          show this help message and exit
+```
 
 ## Available statistics
 
@@ -46,4 +61,23 @@ where {math}`\mathrm{RollingMinimum}` is a minimum boxcar filter of dimension {m
 
 % TODO: Need to include some image here
 
-## Flood fill
+## Reverse flood filling
+
+Cleaning source with features that are both faint and diffuse is difficult. On a per-pixel basis it is often a reality that they do not meet the minimum signal-to-noise cuts. Should the cleaning thresholds (set in either absolute {math}`\mathrm{jy}/\mathrm{beam}` units or in terms of {math}`\sigma` units) be too high this diffuse emission is never cleaned. In `flint` we include a reverse flood fill procedure that grows islands of pixels that meet an initial criteria out to adjacent pixels that met a secondary lower level. This process is often the initial step of most source finders.
+
+There are two steps to this process:
+
+1 - _Initial siginficant island detection_: The statistic of choice (see above) is executed and all pixels above the threshold are marketed as pixels to clean. We can set this via `MaskingOptions.flood_fill_positive_seed_clip`
+2 - _Growing the initial set of islands_; Islands that are identified as significant go through a dilation process, where the dilation process is restricted to limit it only to pixels above the lower level threshold. This lower level clip is set via `MaskingOptions.flood_fill_positive_flood_clip`.
+
+Activating the flood fill procedure is 'opt in' and activated via `MaskingOptions.flood_fill`. Further, the {math}`\mathrm{MAC}` statistic is only exposed when the flood fill is enabled.
+
+% TODO: Need to include some other image here
+
+## Eroding output islands
+
+The output binary clean masks are naturally at the resolution of the input images. All pixels that reside in an island are candidate pixels where cleaning is allowed to occur. Consider an unresolved source that is perfectly aligned to the discrete pixel grid. In principal its clean component should be contained entirely to a single pixel. However, as the source is sufficiently bright that would be a collection of pixels that would be significant enough to pass initial stastical tests (by virtue of the correlation of adjantent pixels via the convolution of the dirty beam). Should deep cleaning be employed it is possible that small perturbations from the noise underlying a source to be cleaned.
+
+A binary erosion process where the structure is the shape of the restoring beam at a particular power level can suppress this effect. See the `MaskingOptions.beam_shape_erode` and `MaskingOptions.beam_shape_erode_minimum_response` options to activate and control this process. The minimum response should be set between 0 to 1, where numbers closer to 0 represent a larger structure function. That is to say for the islands need to be *larger* for pixels to remain after the erosion for as the minimum response approaches 0. As the minimum response approaches 1 smaller islands will survive the erosion process.
+
+The output eroded mask aims to better capture where the clean components are likely to be placed during deconvolution, restricting where cleaning is allow to occur.
