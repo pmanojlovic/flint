@@ -1,6 +1,10 @@
 # Sky-model calibration
 
-NOTE: Sky-model calibration is still a work in progress and should not be relied upon. It uses an idealised primary beam response (i.e. no holography) and is intended to create a model to bandpass calibrate against.
+```{admonition} Caution
+:class: caution
+
+Sky-model calibration is still a work in progress and should not be relied upon. It uses an idealised primary beam response (i.e. no holography) and is intended to create a model to bandpass calibrate against.
+```
 
 `flint` provides basic functionality that attempts to create a sky-model to deerive a set
 of bandpass solutions against. By using a reference catalogue that describes 2D Gaussian

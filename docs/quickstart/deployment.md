@@ -16,15 +16,11 @@ should therefore be straight forward and as simple as a `pip` command.
 (prefect)=
 ## Prefect orchestration
 
-[`Prefect` workflow orchestration framework for building data pipelines in python.](https://github.com/PrefectHQ/prefect).
-A pipeline attempts to control the flow of data between tasks, and manage the potentially complex set of dependencies that exist
-between different stages. The goal of `prefect` is to facilitate this with as little code as possible while representing the work
-in a form that is distinct from the compute environment and the `python` functions themselves. By appropriately managing this
-the workflow in of itself is remarkably scalble with little dependence on compute platforms.
+[`Prefect`](https://github.com/PrefectHQ/prefect) is a workflow orchestration framework for building data pipelines in python. A pipeline attempts to control the flow of data between tasks, and manage the potentially complex set of dependencies that exist between different stages. The goal of `prefect` is to facilitate this with as little code as possible while representing the work in a form that is distinct from the compute environment and the `python` functions themselves. By appropriately managing this the workflow in of itself is remarkably scalble with little dependence on compute platforms.
 
 ### The strategy of using Prefect
 
-[Prefect provides an installation and quickstart guide on their official website.](https://docs.prefect.io/v3/get-started/install)
+Prefect provides an [installation and quickstart guide](https://docs.prefect.io/v3/get-started/install) on their official website.
 There information is provided that not only more thoroughly explains their framework, but also gives sets on how to tap into their
 cloud platform (more below) or how to set up a self-hosted `prefect.server` instance. This information will be more complete (and
 correct) than the brief notes here.
