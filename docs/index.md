@@ -13,6 +13,7 @@ quickstart.md
 about.md
 data.md
 config.md
+masking.md
 ```
 
 ## Indices and tables
