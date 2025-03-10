@@ -87,6 +87,6 @@ flint_flow_subtract_cube_pipeline -h
 # Args that start with '--' can also be set in a config file (specified via --cli-config). Config file syntax allows: key=value, flag=true, stuff=[a,b,c] (for details, see syntax at https://goo.gl/R74nmi). In general, command-line values override config file values which override defaults.
 ```
 
-# Output data
+## Output data
 
 The principle result of this workshow is a spectral cube of the observed field at the native spectral resolution of the input collection of measurement sets (including the corresponding weight map produced by `linmos`). Intermediary files created throughout the workflow are deleted once they are no longer needede in order to preserve disk space.
