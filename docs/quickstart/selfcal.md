@@ -288,6 +288,6 @@ stokesv:
 
 ## Other notes
 
-Should `--stokes-v-imaging` be invoked than after the last round of self-calibration each measurement set will be images in Stokes-V. Settings around the imaging parameters for these Stokes-V imaging are specified by the `stokesv` operation.
+Should `--stokes-v-imaging` be invoked than after the last round of self-calibration each measurement set will be imaged in Stokes V. Settings around the imaging parameters for the Stokes V imaging are specified by the `stokesv` operation.
 
-Should `--coadd-cubes` be invoked than the spectral Stokes-I cubes produced by `wsclean` after the final imaging round are co-addede together to form a field image at different channel ranges. This can be used to investigate the spectral variation of sources. Each channel will be convolved to a common resolution for that channel. In this mode a single `linmos` task is invoked to do the co-adding, which may mean a single long running task should `wsclean` produce many output channels. Be mindful of memory requirements here, as this modde of operation will attempt to load the entirety of all cubes and weights into memory.
+Should `--coadd-cubes` be invoked than the spectral Stokes-I cubes produced by `wsclean` after the final imaging round are co-added together to form a field image at different channel ranges. This can be used to investigate the spectral variation of sources. Each channel will be convolved to a common resolution for that channel. In this mode a single `linmos` task is invoked to do the co-adding, which may mean a single long running task should `wsclean` produce many output channels. Be mindful of memory requirements here, as this modde of operation will attempt to load the entirety of all cubes and weights into memory.
