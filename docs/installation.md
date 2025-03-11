@@ -10,31 +10,9 @@ We separately maintain a set of required containers. Pre-built containers are ho
 
 With `flint` installed, you can use the `flint_containers` CLI to download or check the required containers:
 
-```bash
-flint_containers -h
-# usage: flint_containers [-h] {list,download,verify} ...
-
-# Download and manage Flint containers
-
-# positional arguments:
-#   {list,download,verify}
-#     list                List the containers that are known to Flint
-#     download            Pull each of the known containers
-#     verify              Pull each of the known containers
-
-# options:
-#   -h, --help            show this help message and exit
-```
-
-```bash
-flint_containers download -h
-# usage: flint_containers download [-h] container_directory
-
-# positional arguments:
-#   container_directory  Location to download containers to
-
-# options:
-#   -h, --help           show this help message and exit
+```{argparse}
+:ref: flint.containers.get_parser
+:prog: flint_containers
 ```
 
 In a future release it is planned that tasks or processes that require a container
