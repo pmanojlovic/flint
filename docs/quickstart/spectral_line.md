@@ -1,21 +1,21 @@
 # Spectral line imaging
 
-`flint` has the beginnings of a spectral line workflow that operates against continuum-subtracted visibilities. This mode requires that continuum imaging has been performed using `wsclean`'s `--save-source-list` option, which outputs a text file describing each clean component constructed by `wsclean` and its parameterisation (e.g. location and spatial/spectral shape).
+`flint` has the beginnings of a spectral line workflow that operates against continuum-subtracted visibilities. This mode requires that continuum imaging has been performed using `wsclean`'s `--save-source-list` option, which outputs a text file describing each clean component constructed by `wsclean` and their parameterisation (e.g. location and spatial/spectral shape).
 
 This workflow will first generate model visibilities at the spectral resolution of the data (note that `wsclean` will generate model visibilites that are constant of sub-band intervals). There are two ways to do this:
 
 - using `addmodel` from the `calibrate` container
 - using the `crystalball` python package
 
-When using the `addmodel` approach a sub-flow is created, allowing a set of different computing resources to be described. `addmodel` using threads to accelerate compute, which it does extremely well. However it is not able to spread across nodes to achieve higher throughput. By specifying a different compute profile a large set of resources with more cpus on a single node may be specified, thereby speeding up the model prediction.
+When using the `addmodel` approach a sub-flow is created, allowing a set of different computing resources to be described. `addmodel` using threads to accelerate compute, which it does extremely well. However it is not able to spread across nodes to achieve higher throughput. By specifying a different `dask` cluster compute profile a large set of resources (e.g. more CPUs, longer wall times) may be specified, thereby speeding up the model prediction.
 
-Alternatively, `crystalball` uses `dask` to achieve parallelism. Since `flint` configures `prefect` to use `dask` as its compute backend, `crystalball` is able to use the same infrastructure. This allows the model prediction process to seamlessly scale across many nodes. For most intents and purposes this `crystalball` approach should be preferred.
+Alternatively, we also include an approach that uses a [the `crystalball` `python` package](https://github.com/caracal-pipeline/crystalball).  `crystalball` uses `dask` to achieve parallelism. Since `flint` configures `prefect` to use `dask` as its compute backend, `crystalball` is able to use the same infrastructure. This allows the model prediction process to seamlessly scale across many nodes. For most intents and purposes this `crystalball` approach should be preferred.
 
 ## Achieving parallelism
 
-After a set of model visibilities have been predicted for each measurement set, the result of the continuum subtract leaves what should be noise across all channels (of course, sharp spectral features should also remain). Since there is no benefit to attempt to use the whole bandwidth to maximise source sensitivity (e.g. MFS imaging) each individual channel may be image in isolation from one another. With this in mind the general approach is to configure `dask` to allocate many workers that individually use a small set of compute resources.
+After a set of model visibilities have been predicted for each measurement set, the result of the continuum subtract leaves what should be noise across all channels (of course, sharp spectral features should also remain). Since there is no benefit to multi-frequency synthesis imaging, each individual channel may be image in isolation from one another. With this in mind the general approach is to configure `dask` to allocate many workers that each individually require  a small set of compute resources.
 
-A field image is produced at each channel by a separate `linmos` process. That is to say, if there are 288 channels in the collection of measurement sets, there will be 288 separate innvokations of `linmos` throughout the flow. Once all field images have been proceduce they are concatenated together (in an asyncrohnous and memory efficient way) into a single FITS cube. See the [fitscube python package](https://github.com/alecthomson/fitscube) for more information.
+A field image is produced at each channel by a separate `linmos` process invocation. That is to say, if there are 288 channels in the collection of measurement sets, there will be 288 separate  `linmos` processes throughout the flow. Once all field images have been proceduced they are concatenated together (in an asynchronous and memory efficient way) into a single FITS cube. See the [fitscube python package for more information](https://github.com/alecthomson/fitscube).
 
 ## Output data
 
