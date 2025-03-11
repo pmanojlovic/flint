@@ -34,7 +34,6 @@ as a general principal it is believed that important meta-data should not be sto
 In subsequent workflows that operate against a field and a bandpass is required, the path the folder that contains the
 collection of per-beam observations of PKS B1934-638 and the corresponding set of solutions should be supplied.
 
-
 ## Accessing via the CLI
 
 The primary entry point for bandpass calibration in `flint` is the `flint_flow_bandpass_calibrate`:

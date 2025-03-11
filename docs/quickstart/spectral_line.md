@@ -15,7 +15,7 @@ Alternatively, `crystalball` uses `dask` to achieve parallelism. Since `flint` c
 
 After a set of model visibilities have been predicted for each measurement set, the result of the continuum subtract leaves what should be noise across all channels (of course, sharp spectral features should also remain). Since there is no benefit to attempt to use the whole bandwidth to maximise source sensitivity (e.g. MFS imaging) each individual channel may be image in isolation from one another. With this in mind the general approach is to configure `dask` to allocate many workers that individually use a small set of compute resources.
 
-A field image is produced at each channel by a separate `linmos` process. That is to say, if there are 288 channels in the collection of measurement sets, there will be 288 separate innvokations of `linmos` throughout the flow. Once all field images have been proceduce they are concatenated together (in an asyncrohnous and memory efficient way) into a single FITS cube. See the (fitscube python package)[https://github.com/alecthomson/fitscube] for more information.
+A field image is produced at each channel by a separate `linmos` process. That is to say, if there are 288 channels in the collection of measurement sets, there will be 288 separate innvokations of `linmos` throughout the flow. Once all field images have been proceduce they are concatenated together (in an asyncrohnous and memory efficient way) into a single FITS cube. See the [fitscube python package](https://github.com/alecthomson/fitscube) for more information.
 
 ## Flow CLI
 
