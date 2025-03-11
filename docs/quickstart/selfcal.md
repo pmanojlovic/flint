@@ -209,3 +209,11 @@ The primary entry point for the continuum and self-calibration and imaging pipel
 :ref: flint.prefect.flows.continuum_pipeline.get_parser
 :prog: flint_flow_continuum_pipeline
 ```
+
+## The `FieldOptions` class
+
+Embedded below is the `flint` `Options` class used to drive the `flint_flow_continuum_pipeline` workflow. Input values are validated by `pydantic` to ensure they are appropriately typed.
+
+```{literalinclude}  ../../flint/options.py
+:pyobject: FieldOptions
+```
