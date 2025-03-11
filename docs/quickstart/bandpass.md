@@ -20,7 +20,7 @@ The above procedure attempts to identify faint sources of RFI that only become a
 
 The prefect workflow described above will output:
 
-- A measurement set for each beam centered on PKS B19340638
+- A measurement set for each beam centered on PKS B1934-638
 - The set of bandpass solutions appropriately named
 - Validation plots of the derived solutions.
 
