@@ -29,3 +29,19 @@ The primary entry point for the continuum subtraction and spectral imaging pipel
 :ref: flint.prefect.flows.subtract_cube_pipeline.get_parser
 :prog: flint_flow_subtract_cube_pipeline
 ```
+
+## The `SubtractFieldOptions` class
+
+Embedded below is the `flint` `Options` class used to drive the `flint_flow_subtract_cube_pipeline` workflow. Input values are validated by `pydantic` to ensure they are appropriately typed.
+
+```{literalinclude}  ../../flint/options.py
+:pyobject: SubtractFieldOptions
+```
+
+## The `AddModelSubtractFieldOptions` class
+
+Embedded below is the `flint` `Options` class used to drive the `flint_flow_subtract_cube_pipeline` workflow. Input values are validated by `pydantic` to ensure they are appropriately typed.
+
+```{literalinclude}  ../../flint/options.py
+:pyobject: AddModelSubtractFieldOptions
+```

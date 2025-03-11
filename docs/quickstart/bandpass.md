@@ -42,3 +42,11 @@ The primary entry point for bandpass calibration in `flint` is the `flint_flow_b
 :ref: flint.prefect.flows.bandpass_pipeline.get_parser
 :prog: flint_flow_bandpass_calibrate
 ```
+
+## The `BandpassOptions` class
+
+Embedded below is the `flint` `Options` class used to drive the `flint_flow_bandpass_calibrate` workflow. Input values are validated by `pydantic` to ensure they are appropriately typed.
+
+```{literalinclude}  ../../flint/options.py
+:pyobject: BandpassOptions
+```

@@ -346,12 +346,11 @@ class PolFieldOptions(BaseOptions):
     might be used throughout components related to the actual
     pipeline.
 
-    In its present form this `FieldOptions` class is not intended
+    In its present form this `PolFieldOptions` class is not intended
     to contain properties of the data that are being processed,
     rather how those data will be processed.
 
-    These settings are not meant to be adjustable throughout
-    rounds of self-calibration.
+    These settings are not meant to be adjustable across different polarisations.
     """
 
     expected_ms: int = 36

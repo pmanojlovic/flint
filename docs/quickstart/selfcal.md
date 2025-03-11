@@ -21,7 +21,7 @@ Note that `flint` supports passing in a config file to specify CLI options via `
 
 To keep track of options across rounds of self-calibration we use a 'strategy' file in a YAML format. We give details of this in {ref}`config`. You can generate a minimal strategy file using `flint_config create`. You can specify a 'global' set of options under `defaults`, which will be overwritten by any options set in rounds of `selfcal`.
 
-By way of example, the following strategy file appears to work well for RACS-style data. We do not recommend using this verbatim for any/all sets of data. The `flint_flow_selfcal_pipeline` workflow if referenced by the `selfcal` operation.
+By way of example, the following strategy file appears to work well for RACS-style data. We do not recommend using this verbatim for any/all sets of data. The `flint_flow_selfcal_pipeline` workflow is referenced by the `selfcal` operation.
 
 ```yaml
 version: 0.2
