@@ -6,7 +6,7 @@ The imaging performance of CLEAN and its derivatives can be improved through the
 
 ## Available statistics
 
-`Flint` currently supports two statistics to identify pixels of significance that contain emission to clean.
+`Flint` currently supports two statistics to identify pixels of significance that should be cleaned.
 
 ### Signal-to-noise (SNR)
 
@@ -14,40 +14,42 @@ The obvious method is based on signal-to-noise (SNR). After constructing  backgr
 
 {math}`\mathrm{SNR}(x,y) = \frac{\left(\mathrm{img}-\mu\right)}{\sigma}.`
 
-In the simplest case constant values may be set across the extent of the image {math}`\mu=0`, and {math}`\sigma=\mathrm{SD}(\mathrm{img})`. These can be replaced with more sophisticated schemes that compute position dependent metrics and that also incorporate iterative outlier clipping (e.g. [Background and Noise Estimator](https://github.com/PaulHancock/Aegean)) or robust statistics (e.g. [Selavy](https://www.atnf.csiro.au/computing/software/askapsoft/sdp/docs/current/analysis/selavy.html)).
+In the simplest case constant values may be set across the extent of the image {math}`\mu=0`, and {math}`\sigma=\mathrm{SD}(\mathrm{img})`. These can be replaced with more sophisticated schemes that compute position dependent metrics that also incorporate iterative outlier clipping (e.g. [Background and Noise Estimator](https://github.com/PaulHancock/Aegean)) or robust statistics (e.g. [Selavy](https://www.atnf.csiro.au/computing/software/askapsoft/sdp/docs/current/analysis/selavy.html)).
 
-At its heart these SNR based processes are assuming Gaussian distributed zero-mean noise and attempting to identify pixels that are unlikely to occur by chance. That is to say, pixels that are {math}`\gg5\sigma` are likely to be real and should be included in a mask for cleaning.
+At their heart these SNR based processes are assuming Gaussian distributed zero-mean noise, where pixel intensities that are unlikely to occur by chance are assumed to be genuine emission. That is to say, pixels that are {math}`\gg5\sigma` are likely to be real and should be included in a mask for cleaning.
 
 ### Minimum absolute clip
 
-SNR based measures have a clear statistical foundation when identifying pixels to clean at. However, there are situations when such a metric could be perturbed or otherwise include, including:
+SNR based measures have a clear statistical foundation when identifying bright pixels. However, there are situations when such a metric could be perturbed or otherwise corrupted, including:
 
 - Calibration errors that produce imaging artefacts,
-- Deconvolution errors that are accumulating over minor/major rounds,
-- Misshandling of the w-term imprinting strange patterns,
-- Extended diffuse structures that represent a large fraction of the region used to calculate the local noise,
+- Deconvolution errors that accumulate over minor/major iterations,
+- Misshandling of the w-term so that the 2D Fourier transform approximation breaks down,
+- Extended diffuse structures that represents a large fraction of the region used to calculate the local {math}`\mu` or {math}`\sigma` quantities,
 - Combinations of the above, or
 - Gremlins lurking around in the data.
 
-Ultimately, if the regions being considered in the derivation of the noise do not appear Gaussian like, the robustness of methods to calculate the local noise level are suspect. Additionally, it is unclear whether an accurate noise estimation is even an appropriate basis for some regions. For instance, artefacts around a bright sources produced by phase error could be {math}`>>5\sigma` if the source is bright enough.
+Ultimately, if the regions being considered in the derivation of the noise do not appear Gaussian like, the robustness of methods to calculate the local noise level are suspect. Additionally, it is unclear whether an accurate noise estimation is even an appropriate basis for such regions. For instance, artefacts around a bright sources produced by phase error could be {math}`\gg\sigma` if the genuine source is sufficiently bright.
 
 We introduce the Minimum Absolute Clip ({math}`\mathrm{MAC}`) as an alternative metric. By assuming:
 
-1. approximately zero-mean distributed noise,
+1. approximately zero-mean distributed Gaussian noise,
 2. the sky brightness is positive definite, and
 3. should there be a significantly bright negative component there will be a positive one of comparable brightness nearby.
 
 These assumptions are fair for Stokes-I images. A masking function can therefore be constructed, where:
 
-{math}`\mathrm{MAC} = \mathrm{img} > P \times |\mathrm{RollingMinimum}\left(\mathrm{img}, \delta x, \delta y\right)|`
+{math}`\mathrm{MAC}(x, y) = \mathrm{img} > P \times |\mathrm{RollingMinimum}\left(\mathrm{img}, \mathrm{BoxSize}(\mathrm{img}, x, y)\right)|`
 
-where {math}`\mathrm{RollingMinimum}` is a minimum boxcar filter of dimension {math}`\delta x \times \delta y` pixels. The absolute value of this function is increased by a padding factor {math}`P` to increase the minimum positive threshold. The {math}`\mathrm{MAC}` is a simply and efficient statistic to compute, and can be made more conservative by using larger {math}`\delta x` and {math}`\delta y` when searching for minimum pixels values. Similarly, extensions can be made to detect when an the rolling box filter size is too small (e.g. by an imbalance of positive to negative pixels).
+where {math}`\mathrm{RollingMinimum}` is a minimum boxcar filter of dimensions return by {math}`\mathrm{BoxSize}`pixels, which could be turned in a position dependent way. The absolute value of the {math}`\mathrm{RollingMinimum}` function is increased by a padding factor {math}`P` to increase the minimum positive threshold. The {math}`\mathrm{MAC}` is a simply and efficient statistic to compute.
+
+The choice of an appropriate boxcar size is an important consideration. A larger size enforces more conservative behaviour from the {math}`\mathrm{MAC}` process. Should too small a region be supplied than typically large multi-scale features are less reliably assessed. Extensions can be made to detect when an the rolling box filter size is too small (e.g. by an imbalance of positive to negative pixels). A basic implementation of this adaptive boxcar size is implemented via the `MaskingOptions.flood_fill_use_mbd_adaptive` parameters.
 
 <!-- TODO: Need to include some image here -->
 
 ## Reverse flood filling
 
-Cleaning source with features that are both faint and diffuse is difficult. On a per-pixel basis it is often a reality that they do not meet the minimum signal-to-noise cuts. Should the cleaning thresholds (set in either absolute {math}`\mathrm{Jy}/\mathrm{beam}` units or in terms of {math}`\sigma` units) be too high this diffuse emission is never cleaned. In `flint` we include a reverse flood fill procedure that grows islands of pixels that meet an initial criteria out to adjacent pixels that met a secondary lower level. This process is often the initial step of most source finders.
+Cleaning source with features that are both faint and diffuse is difficult. On a per-pixel basis it is often a reality that a minimum signal-to-noise threshold is not met. Should the cleaning thresholds (set in either absolute {math}`\mathrm{Jy}/\mathrm{beam}` units or in terms of {math}`\sigma` units) be too high this diffuse emission is never cleaned. In `flint` we include a reverse flood fill procedure that grows islands of pixels above an initial criteria out to adjacent pixels that met a secondary lower level. This process is often the initial step of most source finders.
 
 There are two steps to this process:
 
@@ -60,11 +62,9 @@ Activating the flood fill procedure is 'opt in' and activated via `MaskingOption
 
 ## Eroding output islands
 
-The output binary clean masks are naturally at the resolution of the input images. All pixels that reside in an island are candidate pixels where cleaning is allowed to occur. Consider an unresolved source that is perfectly aligned to the discrete pixel grid. In principal its clean component should be contained entirely to a single pixel. However, as the source is sufficiently bright that would be a collection of pixels that would be significant enough to pass initial stastical tests (by virtue of the correlation of adjantent pixels via the convolution of the dirty beam). Should deep cleaning be employed it is possible that small perturbations from the noise underlying a source to be cleaned.
+Output binary clean masks are naturally at the resolution of the input image (at least in `flint`). All pixels that reside in an island are candidate pixels where cleaning is allowed to occur. Consider an unresolved source that is perfectly aligned to the discrete pixel grid. In principal its clean component should be contained entirely to a single pixel. However, as the source is sufficiently bright the resulting mask is made up of many pixels (i.e. the shape the restoring beam). Should deep cleaning be employed it is possible that small perturbations from the noise underlying a source would also be cleaned.
 
-A binary erosion process where the structure is the shape of the restoring beam at a particular power level can suppress this effect. See the `MaskingOptions.beam_shape_erode` and `MaskingOptions.beam_shape_erode_minimum_response` options to activate and control this process. The minimum response should be set between 0 to 1, where numbers closer to 0 represent a larger structure function. That is to say for the islands need to be _larger_ for pixels to remain after the erosion for as the minimum response approaches 0. As the minimum response approaches 1 smaller islands will survive the erosion process.
-
-The output eroded mask aims to better capture where the clean components are likely to be placed during deconvolution, restricting where cleaning is allow to occur.
+A binary erosion process with the erosision structure set to the shape of the restoring beam at a particular power level can be used to 'contract' all pixel masks. The output should better reflect where clean components ought to be placed. See the `MaskingOptions.beam_shape_erode` and `MaskingOptions.beam_shape_erode_minimum_response` options to activate and control this process. The minimum response should be set between 0 to 1, where numbers closer to 0 represent a larger binary erosion structure shape. That is to say islands need to be _larger_ for any pixels to remain as `MaskingOptions.beam_shape_erode_minimum_response` approaches 0.
 
 ## Accessing via the CLI
 
