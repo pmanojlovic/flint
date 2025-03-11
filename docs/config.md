@@ -112,7 +112,7 @@ functions to ensure the modified template file is correctly form.
 
 ## `BaseOptions` class
 
-All (or most) of `flint`'s `Option` classes are derived from `flint.options.BaseOptions`. This uses `pydantic` in order to validate upon class initialisation that the provided values match the types they are listed as having. For instance, if a `float` of a value `3.141` was provided to an option with type `int` it will be converted appropriately. This is also true for values described in a strategy file.
+All (or most) of `flint`'s `Options` classes are derived from `flint.options.BaseOptions`. This uses `pydantic` in order to validate upon class initialisation that the provided values match the types they are listed as having. For instance, if a `float` of a value `3.141` was provided to an option with type `int` it will be converted appropriately. This is also true for values described in a strategy file.
 
 If the values are unable to be coerced into a correct type than `pydantic` will raise an error.
 

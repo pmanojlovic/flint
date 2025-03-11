@@ -1,16 +1,16 @@
-# Clean Masks
+# Creating Clean Masks
 
-One approach towards improving the performance of CLEAN and its derivatives is to provide a _clean mask_ where is a set of pixels are defined that restrict the peak finding process. Here the aim of the game is to optimally select pixels that contain genuine emission. Issues such as clean bias. sub-optimal self-calibration and clean divergence can be minimised or outright avoided provide a clean mask has been reliable constructed.
+The imaging performance of CLEAN and its derivatives can be improved through the construction of reliable clean mask regions.  These regions restrict the set of pixels that are involved during the peak finding stage of CLEAN. Here the aim of the game is to optimally select pixels that contain genuine emission. Issues such as clean bias. sub-optimal self-calibration and clean divergence can be minimised or outright eliminated provided a clean mask has been reliable constructed.
 
-`Flint` provide functionality to describe a pixel-wise masks or arbitrary shapes that can be used to restrict region where cleaning is allowed to be performed. These are intended to be evaluated against a restored FITS image, and the outputs is a FITS image of equal shape where pixels with a value of `1` indicate cleaning is allowed, `0` otherwise.
+`Flint` provides functionality to construct such clean masks, where the output is a pixel-wise mask of arbitrary shapes that either allow of deny cleaning to occur at certain pixel locations. These are intended to be evaluated against a restored FITS image. Pixels in the output clean mask are either `0` (cleaning is not allowed here) or `1` (cleaning is allowed here).
 
 ## Available statistics
 
-`flint` currently supports two statistical methods to identify pixels of significance described by within some input image.
+`Flint` currently supports two statistics to identify pixels of significance that contain emission to clean.
 
 ### Signal-to-noise (SNR)
 
-The obvious method is one that estimates the background ({math}`\mu`) and noise ({math}`\sigma`) from which the signal-to-noise ratio ({math}`\mathrm{SNR}`) across the image ({math}`\mathrm{img}`) can be expressed:
+The obvious method is based on signal-to-noise (SNR). After constructing  background ({math}`\mu`) and noise ({math}`\sigma`) measures across an image a direction-dependent SNR ({math}`\mathrm{SNR}`) across the image ({math}`\mathrm{img}`) can be expressed:
 
 {math}`\mathrm{SNR}(x,y) = \frac{\left(\mathrm{img}-\mu\right)}{\sigma}.`
 
@@ -73,4 +73,12 @@ The masking utility may be accessed via a CLI entrypoint:
 ```{argparse}
 :ref: flint.masking.get_parser
 :prog: flint_masking
+```
+
+## The `MaskingOptions` class
+
+Embedded below is the `flint` `Options` class used to construct clean masks. Input values are validated by `pydantic` to ensure they are appropriately typed.
+
+```{literalinclude}  ../flint/masking.py
+:pyobject: MaskingOptions
 ```
