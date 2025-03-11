@@ -14,6 +14,7 @@ about.md
 data.md
 config.md
 masking.md
+contributions.md
 ```
 
 ## Indices and tables
