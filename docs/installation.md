@@ -13,11 +13,24 @@ With `flint` installed, you can use the `flint_containers` CLI to download or ch
 ```{argparse}
 :ref: flint.containers.get_parser
 :prog: flint_containers
+:path: download
 ```
 
 In a future release it is planned that tasks or processes that require a container
 will internally resolve them automatically. For the moment though it is expected
 that the user provides the appropriate set of paths through CLI keyword arguments.
+
+## Catalogues
+
+Some functions within `flint` require access to known external catalogues. These may be downloaded via
+
+```{argparse}
+:ref: flint.catalogue.get_parser
+:prog: flint_catalgoues
+:path: download
+```
+
+Once these catalogues have been downloaded the `reference_directory` will be required as an input into key functions. The `flint` infrastructure will then access the appropriate reference catalogue as required.
 
 ## Installing casacore
 
