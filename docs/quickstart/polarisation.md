@@ -47,3 +47,11 @@ As of writing, these generally apply to `wsclean <= 3.5` and may change with fut
 :ref: flint.prefect.flows.polarisation_pipeline.get_parser
 :prog: flint_flow_polarisation_pipeline
 ```
+
+## The `PolFieldOptions` class
+
+Embedded below is the `flint` `Options` class used to drive the `flint_flow_polarisation_pipeline` workflow. Input values are validated by `pydantic` to ensure they are appropriately typed.
+
+```{literalinclude}  ../../flint/options.py
+:pyobject: PolFieldOptions
+```
